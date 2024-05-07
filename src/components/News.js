@@ -36,8 +36,8 @@ function News() {
           </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-          <div className="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">
-            <h2 className="text-xl font-semibold mb-2 text-blue-600 dark:text-sky-400">Article Title</h2>
+          <div className="not-prose relative  rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">
+            <h2 className="text-xl font-semibold mb-2  dark:text-sky-400">Article Title</h2>
             <p className=" text-slate-100 mb-4">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </p>
@@ -45,8 +45,8 @@ function News() {
             <span className="text-sm text-gray-300 mr-4">Source: BBC News</span>
             <span className="text-sm text-gray-300">Date: 2022-10-05</span>
           </div>
-          <div className="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">
-            <h2 className="text-xl font-semibold mb-2 text-blue-600 dark:text-sky-400">Article Title</h2>
+          <div className="not-prose relative rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">
+            <h2 className="text-xl font-semibold mb-2  dark:text-sky-400">Article Title</h2>
             <p className=" text-slate-100 mb-4">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </p>
@@ -54,8 +54,8 @@ function News() {
             <span className="text-sm text-gray-300 mr-4">Source: BBC News</span>
             <span className="text-sm text-gray-300">Date: 2022-10-05</span>
           </div>
-          <div className="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">
-            <h2 className="text-xl font-semibold mb-2 text-blue-600 dark:text-sky-400">Article Title</h2>
+          <div className="not-prose relative rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">
+            <h2 className="text-xl font-semibold mb-2  dark:text-sky-400">Article Title</h2>
             <p className=" text-slate-100 mb-4">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </p>
@@ -63,8 +63,8 @@ function News() {
             <span className="text-sm text-gray-300 mr-4">Source: BBC News</span>
             <span className="text-sm text-gray-300">Date: 2022-10-05</span>
           </div>
-          <div className="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">
-            <h2 className="text-xl font-semibold mb-2 text-blue-600 dark:text-sky-400">Article Title</h2>
+          <div className="not-prose relative rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">
+            <h2 className="text-xl font-semibold mb-2 dark:text-sky-400">Article Title</h2>
             <p className=" text-slate-100 mb-4">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </p>
