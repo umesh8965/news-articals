@@ -15,6 +15,10 @@
   .dark\:text-white {
     color: #FFFFFF;
   }
+  .dark\:text-sky-400{
+    color:#38bdf8
+
+  }
   .dark\:bg-gray-800 {
     background-color: #1F2937;
   }
