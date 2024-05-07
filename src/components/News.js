@@ -27,7 +27,7 @@ function News() {
     }
 
     return () => clearTimeout(typingTimeout);
-  
+
   }, [searchTerm]);
 
   const getNews = async () => {
@@ -39,7 +39,7 @@ function News() {
       console.error('Error fetching data:', error);
       setLoading(false);
     }
-   
+
   }
 
   const handleSearchInputChange = (event) => {
@@ -70,7 +70,7 @@ function News() {
             {categoryList.map(function(category, i){
               return <option value="{category.slug}">{category.name}</option>;
             })}
-           
+
           </select>
           <select className="dark:bg-gray-800 dark:text-white block shadow-md focus:ring focus:ring-blue-400 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
             <option value="">Select Source</option>
@@ -103,7 +103,7 @@ function News() {
       <span className="text-sm text-gray-300">Date: { moment(post.webPublicationDate, 'YYYY-MM-DD H:i:s').format('YYYY-MM-DD') }</span>
     </div>
   ))
-  
+
  }
 
 </div>
@@ -112,7 +112,7 @@ function News() {
         {news.length == 0 && !loading && (
           <div className="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">No Records Found</div>
         )}
-       
+
       </div>
     </div>
   );

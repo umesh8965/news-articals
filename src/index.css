@@ -5,12 +5,19 @@
 
 /* styles.css */
 /* Define custom styles for dark mode */
-@media (prefers-color-scheme: dark) {
+
+  body {
+    background-color: #1a202c;
+  }
   .dark\:bg-gray-900 {
     background-color: #111827;
   }
   .dark\:text-white {
     color: #FFFFFF;
+  }
+  .dark\:text-sky-400{
+    color:#38bdf8
+
   }
   .dark\:bg-gray-800 {
     background-color: #1F2937;
@@ -18,4 +25,4 @@
   .dark\:hover\:bg-gray-700:hover {
     background-color: #374151;
   }
-}
+
