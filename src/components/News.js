@@ -1,6 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { ApiHelper } from "../Helpers/Helpers";
+
 
 function News() {
+  const categoryList = [{slug: 'business', name: 'Business'}, {slug: 'technology', name: 'Technology'}, {slug: 'sports', name: 'Sports'}];
+  const sourceList = [{slug: 'bbc-news', name: 'BBC News'}, {slug: 'cnn', name: 'CNN'}, {slug: 'the-new-york-times', name: 'The New York Times'}];
+  const [news, setNews] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState(null);
+  const moment = require('moment');
+
+  useEffect(() => {
+    if (typingTimeout) {
+      clearTimeout(typingTimeout);
+    }
+
+    if (searchTerm.trim() !== '') {
+      setLoading(true);
+      const timeoutId = setTimeout(() => {
+        getNews();
+      }, 500); // Adjust this delay as needed
+      setTypingTimeout(timeoutId);
+    } else {
+      getNews();
+    }
+
+    return () => clearTimeout(typingTimeout);
+  
+  }, [searchTerm]);
+
+  const getNews = async () => {
+    try {
+      const res = await ApiHelper("https://content.guardianapis.com/search?api-key=f25fc3f6-df87-4aa5-801f-5b5068704610", "GET", {});
+      setNews(res.response.results);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setLoading(false);
+    }
+   
+  }
+
+  const handleSearchInputChange = (event) => {
+    setSearchTerm(event.target.value);
+  }
+
+
+
   return (
     <div className="max-w-screen-lg container mx-auto ">
       <div className="px-4 py-8">
@@ -10,6 +57,8 @@ function News() {
         <div className="mb-4">
           <input
             type="text"
+            onChange={handleSearchInputChange}
+            value={searchTerm}
             className="w-full dark:bg-gray-800 dark:text-white block px-4 py-2 rounded-md shadow-md focus:outline-none focus:ring focus:ring-blue-400"
             placeholder="Search Articles by Keyword..."
           />
@@ -17,15 +66,17 @@ function News() {
         <div className="flex flex-wrap gap-4 mb-4">
           <select className="dark:bg-gray-800 dark:text-white block shadow-md focus:ring focus:ring-blue-400 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
             <option value="">Select Category</option>
-            <option value="business">Business</option>
-            <option value="technology">Technology</option>
-            <option value="sports">Sports</option>
+
+            {categoryList.map(function(category, i){
+              return <option value="{category.slug}">{category.name}</option>;
+            })}
+           
           </select>
           <select className="dark:bg-gray-800 dark:text-white block shadow-md focus:ring focus:ring-blue-400 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
             <option value="">Select Source</option>
-            <option value="bbc-news">BBC News</option>
-            <option value="cnn">CNN</option>
-            <option value="the-new-york-times">The New York Times</option>
+            {sourceList.map(function(source, i){
+              return <option value="{source.slug}">{source.name}</option>;
+            })}
           </select>
           <input
             type="date"
@@ -35,44 +86,33 @@ function News() {
             Apply Filters
           </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-          <div className="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">
-            <h2 className="text-xl font-semibold mb-2 text-blue-600 dark:text-sky-400">Article Title</h2>
-            <p className=" text-slate-100 mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-            <span className="text-sm text-gray-300 mr-4">Category: Business</span>
-            <span className="text-sm text-gray-300 mr-4">Source: BBC News</span>
-            <span className="text-sm text-gray-300">Date: 2022-10-05</span>
-          </div>
-          <div className="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">
-            <h2 className="text-xl font-semibold mb-2 text-blue-600 dark:text-sky-400">Article Title</h2>
-            <p className=" text-slate-100 mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-            <span className="text-sm text-gray-300 mr-4">Category: Business</span>
-            <span className="text-sm text-gray-300 mr-4">Source: BBC News</span>
-            <span className="text-sm text-gray-300">Date: 2022-10-05</span>
-          </div>
-          <div className="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">
-            <h2 className="text-xl font-semibold mb-2 text-blue-600 dark:text-sky-400">Article Title</h2>
-            <p className=" text-slate-100 mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-            <span className="text-sm text-gray-300 mr-4">Category: Business</span>
-            <span className="text-sm text-gray-300 mr-4">Source: BBC News</span>
-            <span className="text-sm text-gray-300">Date: 2022-10-05</span>
-          </div>
-          <div className="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">
-            <h2 className="text-xl font-semibold mb-2 text-blue-600 dark:text-sky-400">Article Title</h2>
-            <p className=" text-slate-100 mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            </p>
-            <span className="text-sm text-gray-300 mr-4">Category: Business</span>
-            <span className="text-sm text-gray-300 mr-4">Source: BBC News</span>
-            <span className="text-sm text-gray-300">Date: 2022-10-05</span>
-          </div>
-        </div>
+        {loading && (
+          <div className="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">Loading....</div>
+        )}
+        {news.length > 0 && !loading && (
+ <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+ {
+  news.map((post,i)=>(
+    <div className="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">
+      <h2 className="text-xl font-semibold mb-2 text-blue-600 dark:text-sky-400">{post.type}</h2>
+      <p className=" text-slate-100 mb-4">
+        {post.webTitle}
+      </p>
+      <span className="text-sm text-gray-300 mr-4">Category: {post.sectionName}</span>
+      <span className="text-sm text-gray-300 mr-4">Source: - </span>
+      <span className="text-sm text-gray-300">Date: { moment(post.webPublicationDate, 'YYYY-MM-DD H:i:s').format('YYYY-MM-DD') }</span>
+    </div>
+  ))
+  
+ }
+
+</div>
+        )}
+
+        {news.length == 0 && !loading && (
+          <div className="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">No Records Found</div>
+        )}
+       
       </div>
     </div>
   );
