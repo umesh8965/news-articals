@@ -42,13 +42,22 @@ function News() {
       setNews(res.response.results);
       setLoading(false);*/
 
-      const url =
-        "https://newsapi.org/v2/everything?q=sport";
+      /** New York Times */
+      const urlNYTApi = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=election&api-key=nCM6qEAwiPdvOd15okls02NdoeBkTLBK";
+
+      /** Guardian */
+      const urlGuardianApi = "https://content.guardianapis.com/search?api-key=f25fc3f6-df87-4aa5-801f-5b5068704610";
+
+      /** NewsAPI */
+      const url = "https://newsapi.org/v2/everything?q=sport";
       const apiKey = "c5dcd1f88d0042f29ebec1c7d6598a1c";
+
+      
 
       fetch(url, {
         method: "GET",
         headers: {
+          /** x-api-key param only applicable for NewsAPI, No need for other API source*/
           "x-api-key": apiKey,
         },
       })
@@ -59,7 +68,8 @@ function News() {
           return response.json();
         })
         .then((data) => {
-          setNews(data.response.results);
+          console.log(data.articles)
+          setNews(data.articles);
           setLoading(false);
         })
         .catch((error) =>
