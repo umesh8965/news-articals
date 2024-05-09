@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ApiHelper } from "../Helpers/Helpers";
+import env from "react-dotenv";
+import moment from "moment";
 
 function News() {
   const categoryList = [
@@ -13,76 +15,65 @@ function News() {
     { slug: "the-new-york-times", name: "The New York Times" },
   ];
   const [news, setNews] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [typingTimeout, setTypingTimeout] = useState(null);
-  const moment = require("moment");
-
-  useEffect(() => {
+  const [searchParams, setSearchParams] = useState({category: "", sources: "bbc-news", from: "", q: ""});
+  useEffect(  () => {
     if (typingTimeout) {
       clearTimeout(typingTimeout);
     }
 
-    if (searchTerm.trim() !== "") {
+    if (searchParams.q.trim() !== "") {
       setLoading(true);
-      const timeoutId = setTimeout(() => {
-        getNews();
+      const timeoutId = setTimeout(async() => {
+       await getNews();
       }, 500); // Adjust this delay as needed
       setTypingTimeout(timeoutId);
-    } else {
-      getNews();
     }
 
     return () => clearTimeout(typingTimeout);
-  }, [searchTerm]);
+  }, [searchParams.q]);
+
+  useEffect(() => {
+    getNews();
+  },[])
 
   const getNews = async () => {
     try {
-      /*const res = await ApiHelper("https://api.worldnewsapi.com/search-news?text=tesla&language=en&apikey=c63a89ac149f4c75b1d25fc6aa2d06dc", "GET", {});
-      setNews(res.response.results);
-      setLoading(false);*/
-
-      /** New York Times */
-      const urlNYTApi = "https://api.nytimes.com/svc/search/v2/articlesearch.json?q=election&api-key=nCM6qEAwiPdvOd15okls02NdoeBkTLBK";
-
-      /** Guardian */
-      const urlGuardianApi = "https://content.guardianapis.com/search?api-key=f25fc3f6-df87-4aa5-801f-5b5068704610";
-
-      /** NewsAPI */
-      const url = "https://newsapi.org/v2/everything?q=sport";
-      const apiKey = "c5dcd1f88d0042f29ebec1c7d6598a1c";
-
-      
-
-      fetch(url, {
-        method: "GET",
-        headers: {
-          /** x-api-key param only applicable for NewsAPI, No need for other API source*/
-          "x-api-key": apiKey,
-        },
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log(data.articles)
-          setNews(data.articles);
+      const queryString = Object.entries(searchParams)
+          .map(([k, v]) => `${k}=${v}`)
+          .join("&");
+      console.log('queryString', queryString);
+      switch(searchParams.sources) {
+        case 'bbc-news':
+          const bbcNews = await ApiHelper(window.env.BBC_NEW_API_URL + '?' + queryString, "GET", {}, {"X-Api-Key" : window.env.BBC_NEW_API_KEY});
+          setNews(bbcNews.response.results);
           setLoading(false);
-        })
-        .catch((error) =>
-          console.error("There was a problem with the fetch operation:", error)
-        );
+          break;
+        case 'cnn':
+          const cnnNews = await ApiHelper(window.env.CNN_API_URL + '?api-key=' + window.env.CNN_API_KEY + '&' + queryString, "GET", {}, {});
+          setNews(cnnNews.response.results);
+          setLoading(false);
+          break;
+        case 'the-new-york-times':
+          const theNewYorkTimesNews = await ApiHelper(window.env.THE_NEW_YORK_TIMES_API_URL+ '?api-key=' + window.env.CNN_API_KEY + '&' + queryString, "GET", {}, {});
+          setNews(theNewYorkTimesNews.response.results);
+          setLoading(false);
+          break;
+        default:
+          break;
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
       setLoading(false);
     }
   };
 
-  const handleSearchInputChange = (event) => {
-    setSearchTerm(event.target.value);
+  const handleSearchInputChange = (event, key) => {
+    setSearchParams(prevState => ({
+      ...prevState,
+      [key]: event.target.value,
+    }))
   };
 
   return (
@@ -94,31 +85,33 @@ function News() {
         <div className="mb-4">
           <input
             type="text"
-            onChange={handleSearchInputChange}
-            value={searchTerm}
+            onChange={(event) => handleSearchInputChange(event, 'q')}
+            value={searchParams.q}
             className="w-full dark:bg-gray-800 dark:text-white block px-4 py-2 rounded-md shadow-md focus:outline-none focus:ring focus:ring-blue-400"
             placeholder="Search Articles by Keyword..."
           />
         </div>
         <div className="flex flex-wrap gap-4 mb-4">
-          <select className="dark:bg-gray-800 dark:text-white block shadow-md focus:ring focus:ring-blue-400 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
+          <select onChange={(event) => handleSearchInputChange(event, 'category')} className="dark:bg-gray-800 dark:text-white block shadow-md focus:ring focus:ring-blue-400 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500" value={searchParams.category}>
             <option value="">Select Category</option>
 
             {categoryList.map(function (category, i) {
-              return <option value="{category.slug}">{category.name}</option>;
+              return <option value={category.slug}>{category.name}</option>;
             })}
           </select>
-          <select className="dark:bg-gray-800 dark:text-white block shadow-md focus:ring focus:ring-blue-400 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
+          <select onChange={(event) => handleSearchInputChange(event, 'sources')} className="dark:bg-gray-800 dark:text-white block shadow-md focus:ring focus:ring-blue-400 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500" value={searchParams.sources}>
             <option value="">Select Source</option>
             {sourceList.map(function (source, i) {
-              return <option value="{source.slug}">{source.name}</option>;
+              return <option value={source.slug}>{source.name}</option>;
             })}
           </select>
           <input
             type="date"
             className="dark:bg-gray-800 dark:text-white block shadow-md focus:ring focus:ring-blue-400 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+            value={searchParams.from}
+            onChange={(event) => handleSearchInputChange(event, 'from')}
           />
-          <button className="dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white px-4 py-2 rounded-md shadow-md hover:shadow-lg border-solid border-2 border-sky-500">
+          <button className="dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white px-4 py-2 rounded-md shadow-md hover:shadow-lg border-solid border-2 border-sky-500" onClick={() => getNews()}>
             Apply Filters
           </button>
         </div>
