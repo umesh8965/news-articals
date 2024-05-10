@@ -68,7 +68,6 @@ function News() {
                         section:searchParams.category,
                         from_date: searchParams.from,
                     }
-                    debugger
                     const theGuardianQueryString = Object.entries(theGuardianNewsQuery)
                         .map(([k, v]) => `${k}=${v}`)
                         .join("&");
