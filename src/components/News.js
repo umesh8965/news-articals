@@ -10,7 +10,7 @@ function News() {
     ];
     const sourceList = [
         {slug: "bbc-news", name: "BBC News"},
-        {slug: "cnn", name: "CNN"},
+        {slug: "the-guardian", name: "The Guardian"},
         {slug: "the-new-york-times", name: "The New York Times"},
     ];
     const [news, setNews] = useState([]);
@@ -62,18 +62,18 @@ function News() {
                     }
                     setLoading(false);
                     break;
-                case 'cnn':
-                    const cnnNewsQuery = {
+                case 'theguardian':
+                    const theguardianNewsQuery = {                        
                         q: searchParams.q,
                         from_date: searchParams.from,
                     }
-                    const cnnQueryString = Object.entries(cnnNewsQuery)
+                    const theguardianQueryString = Object.entries(theguardianNewsQuery)
                         .map(([k, v]) => `${k}=${v}`)
                         .join("&");
-                    const cnnNews = await ApiHelper(`${window.env.CNN_API_URL}?api-key=${window.env.CNN_API_KEY}&${cnnQueryString}`, "GET", {}, {});
-                    if (cnnNews?.response?.results && cnnNews?.response?.results.length > 0) {
+                    const theguardianNews = await ApiHelper(`${window.env.THE_GUARDIAN_API_URL}?api-key=${window.env.THE_GUARDIAN_API_KEY}&${theguardianQueryString}`, "GET", {}, {});
+                    if (theguardianNews?.response?.results && theguardianNews?.response?.results.length > 0) {
                         let theNewYorkTimesNewsArray = [];
-                        cnnNews?.response?.results.map(function (object, i) {
+                        theguardianNews?.response?.results.map(function (object, i) {
                             let newObj = {
                                 title: object?.webTitle,
                                 description: object?.webTitle,
@@ -88,7 +88,7 @@ function News() {
                     setLoading(false);
                     break;
                 case 'the-new-york-times':
-                    const theNewYorkTimesNews = await ApiHelper(`${window.env.THE_NEW_YORK_TIMES_API_URL}?api-key=${window.env.THE_NEW_YORK_TIMES_API_KEY}&q=${searchParams.q}&fq=source:("The New York Times")`, "GET", {}, {});
+                    const theNewYorkTimesNews = await ApiHelper(`${window.env.THE_NEW_YORK_TIMES_API_URL}?api-key=${window.env.THE_NEW_YORK_TIMES_API_KEY}&q=${searchParams.q}&fq=${searchParams.category}`, "GET", {}, {});
                     if (theNewYorkTimesNews?.response?.docs && theNewYorkTimesNews?.response?.docs.length > 0) {
                         let theNewYorkTimesNewsArray = [];
                         theNewYorkTimesNews?.response?.docs.map(function (object, i) {
