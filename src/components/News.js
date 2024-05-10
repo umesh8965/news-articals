@@ -70,7 +70,7 @@ function News() {
                     const theGuardianQueryString = Object.entries(theGuardianNewsQuery)
                         .map(([k, v]) => `${k}=${v}`)
                         .join("&");
-                    const theGuardianNews = await ApiHelper(`${window.env.THE_GUARDIAN_API_URL}?api-key=${window.env.THE_GUARDIAN_API_KEY}&${theGuardianQueryString}`, "GET", {}, {});
+                    const theGuardianNews = await ApiHelper(`${window.env.THE_GUARDIAN_API_URL}?${theGuardianQueryString}&api-key=${window.env.THE_GUARDIAN_API_KEY}`, "GET", {}, {});
                     if (theGuardianNews?.response?.results && theGuardianNews?.response?.results.length > 0) {
                         let theGuardianArray = [];
                         theGuardianNews?.response?.results.map(function (object, i) {
