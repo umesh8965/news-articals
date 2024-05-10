@@ -5,18 +5,21 @@ import moment from "moment";
 function News() {
     const categoryList = [
         {slug: "business", name: "Business"},
-        {slug: "technology", name: "Technology"},
+        {slug:'entertainment', name:"Entertainment"},
+        {slug:'health', name:"Health"},
         {slug: "sports", name: "Sports"},
+        {slug: "technology", name: "Technology"},
+
     ];
     const sourceList = [
-        {slug: "bbc-news", name: "BBC News"},
+        {slug: "bbc-news", name: "All"},
         {slug: "the-guardian", name: "The Guardian"},
         {slug: "the-new-york-times", name: "The New York Times"},
     ];
     const [news, setNews] = useState([]);
     const [loading, setLoading] = useState(false);
     const [typingTimeout, setTypingTimeout] = useState(null);
-    const [searchParams, setSearchParams] = useState({category: "", sources: "bbc-news", from: "", q: ""});
+    const [searchParams, setSearchParams] = useState({category: "business", sources: "bbc-news", from: "", q: ""});
     useEffect(() => {
         if (typingTimeout) {
             clearTimeout(typingTimeout);
@@ -42,7 +45,12 @@ function News() {
 
             switch (searchParams.sources) {
                 case 'bbc-news':
-                    const queryString = Object.entries(searchParams)
+                  const allNewsQuery = {                        
+                    q: searchParams.q,
+                    category:searchParams.category ? searchParams.category : "general",
+                    from_date: searchParams.from,
+                  }
+                    const queryString = Object.entries(allNewsQuery)
                         .map(([k, v]) => `${k}=${v}`)
                         .join("&");
                     const bbcNews = await ApiHelper(`${window.env.BBC_NEW_API_URL}?${queryString}`, "GET", {}, {"X-Api-Key": window.env.BBC_NEW_API_KEY});
@@ -141,7 +149,6 @@ function News() {
                     <select onChange={(event) => handleSearchInputChange(event, 'category')}
                             className="dark:bg-gray-800 dark:text-white block shadow-md focus:ring focus:ring-blue-400 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
                             value={searchParams.category}>
-                        <option value="">Select Category</option>
 
                         {categoryList.map(function (category, i) {
                             return <option value={category.slug}>{category.name}</option>;
@@ -184,7 +191,7 @@ function News() {
                                 <span className="text-sm text-gray-300 mr-4">
                   Category: {post.category}
                 </span>
-                                <span className="text-sm text-gray-300 mr-4">Source: - {post.source}</span>
+                                <span className="text-sm text-gray-300 mr-4">{post.source ? `Source: - ${post.source}` : ""} </span>
                                 <span className="text-sm text-gray-300">
                   Date:{" "}
                                     {moment(post.date).format(
