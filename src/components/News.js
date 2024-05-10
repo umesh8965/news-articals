@@ -62,18 +62,18 @@ function News() {
                     }
                     setLoading(false);
                     break;
-                case 'theguardian':
-                    const theguardianNewsQuery = {                        
+                case 'the-guardian':
+                    const theGuardianNewsQuery = {                        
                         q: searchParams.q,
                         from_date: searchParams.from,
                     }
-                    const theguardianQueryString = Object.entries(theguardianNewsQuery)
+                    const theGuardianQueryString = Object.entries(theGuardianNewsQuery)
                         .map(([k, v]) => `${k}=${v}`)
                         .join("&");
-                    const theguardianNews = await ApiHelper(`${window.env.THE_GUARDIAN_API_URL}?api-key=${window.env.THE_GUARDIAN_API_KEY}&${theguardianQueryString}`, "GET", {}, {});
-                    if (theguardianNews?.response?.results && theguardianNews?.response?.results.length > 0) {
-                        let theNewYorkTimesNewsArray = [];
-                        theguardianNews?.response?.results.map(function (object, i) {
+                    const theGuardianNews = await ApiHelper(`${window.env.THE_GUARDIAN_API_URL}?api-key=${window.env.THE_GUARDIAN_API_KEY}&${theGuardianQueryString}`, "GET", {}, {});
+                    if (theGuardianNews?.response?.results && theGuardianNews?.response?.results.length > 0) {
+                        let theGuardianArray = [];
+                        theGuardianNews?.response?.results.map(function (object, i) {
                             let newObj = {
                                 title: object?.webTitle,
                                 description: object?.webTitle,
@@ -81,9 +81,9 @@ function News() {
                                 source: searchParams?.source,
                                 date: object?.webPublicationDate,
                             };
-                            theNewYorkTimesNewsArray.push(newObj);
+                            theGuardianArray.push(newObj);
                         });
-                        setNews(theNewYorkTimesNewsArray);
+                        setNews(theGuardianArray);
                     }
                     setLoading(false);
                     break;
@@ -174,7 +174,7 @@ function News() {
                 {news.length > 0 && !loading && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
                         {news.map((post, i) => (
-                            <div
+                            <div key={post.id}
                                 className="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900">
                                 <h2 className="text-xl font-semibold mb-2 text-blue-600 dark:text-sky-400">
                                     {post.title}
