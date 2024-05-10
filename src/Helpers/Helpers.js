@@ -17,7 +17,6 @@ export function ApiHelper(url, method = 'POST', data = {}, headers) {
     } else {
         return fetch(url, {
             method: method,
-            data: JSON.stringify(data),
             headers: headers,
         })
             .then(res => {
