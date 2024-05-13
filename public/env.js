@@ -1,5 +1,5 @@
 window.env = {
-  "BBC_NEW_API_URL": "https://newsapi.org/v2/top-headlines",
+  "BBC_NEW_API_URL": "https://newsapi.org/v2/top-headlines/sources",
   "THE_GUARDIAN_API_URL": "https://content.guardianapis.com/search",
   "THE_NEW_YORK_TIMES_API_URL": "https://api.nytimes.com/svc/search/v2/articlesearch.json",
   "BBC_NEW_API_KEY": "c5dcd1f88d0042f29ebec1c7d6598a1c",
