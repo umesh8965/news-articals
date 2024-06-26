@@ -1,29 +1,57 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, ChangeEvent } from "react";
 import { ApiHelper } from "../Helpers/Helpers";
 import moment from "moment";
 
+interface Category {
+  slug: string;
+  name: string;
+}
+
+interface Source {
+  slug: string;
+  name: string;
+}
+
+interface NewsArticle {
+  title: string;
+  description: string;
+  category: string;
+  source: string;
+  date: string;
+}
+
+interface SearchParams {
+  category: string;
+  sources: string;
+  from: string;
+  q: string;
+}
+
 function News() {
-  const categoryList = [
+  const categoryList: Category[] = [
     { slug: "business", name: "Business" },
     { slug: "entertainment", name: "Entertainment" },
     { slug: "health", name: "Health" },
     { slug: "sports", name: "Sports" },
     { slug: "technology", name: "Technology" },
   ];
-  const sourceList = [
+
+  const sourceList: Source[] = [
     { slug: "bbc-news", name: "All" },
     { slug: "the-guardian", name: "The Guardian" },
     { slug: "the-new-york-times", name: "The New York Times" },
   ];
-  const [news, setNews] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [typingTimeout, setTypingTimeout] = useState(null);
-  const [searchParams, setSearchParams] = useState({
+
+  const [news, setNews] = useState<NewsArticle[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [searchParams, setSearchParams] = useState<SearchParams>({
     category: "business",
     sources: "bbc-news",
     from: "",
     q: "",
   });
+
   useEffect(() => {
     if (typingTimeout) {
       clearTimeout(typingTimeout);
@@ -37,7 +65,11 @@ function News() {
       setTypingTimeout(timeoutId);
     }
 
-    return () => clearTimeout(typingTimeout);
+    return () => {
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
+      }
+    };
   }, [searchParams.q]);
 
   useEffect(() => {
@@ -63,9 +95,9 @@ function News() {
             { "X-Api-Key": window.env.BBC_NEW_API_KEY }
           );
           if (bbcNews?.articles && bbcNews?.articles.length > 0) {
-            let bbcNewsArray = [];
-            bbcNews?.articles.map(function (object, i) {
-              let newObj = {
+            let bbcNewsArray: NewsArticle[] = [];
+            bbcNews?.articles.map((object: any) => {
+              let newObj: NewsArticle = {
                 title: object?.title,
                 description: object?.description,
                 category: searchParams?.category,
@@ -97,13 +129,13 @@ function News() {
             theGuardianNews?.response?.results &&
             theGuardianNews?.response?.results.length > 0
           ) {
-            let theGuardianArray = [];
-            theGuardianNews?.response?.results.map(function (object, i) {
-              let newObj = {
+            let theGuardianArray: NewsArticle[] = [];
+            theGuardianNews?.response?.results.map((object: any) => {
+              let newObj: NewsArticle = {
                 title: object?.webTitle,
                 description: object?.webTitle,
                 category: searchParams?.category,
-                source: searchParams?.source,
+                source: searchParams?.sources,
                 date: object?.webPublicationDate,
               };
               theGuardianArray.push(newObj);
@@ -123,9 +155,9 @@ function News() {
             theNewYorkTimesNews?.response?.docs &&
             theNewYorkTimesNews?.response?.docs.length > 0
           ) {
-            let theNewYorkTimesNewsArray = [];
-            theNewYorkTimesNews?.response?.docs.map(function (object, i) {
-              let newObj = {
+            let theNewYorkTimesNewsArray: NewsArticle[] = [];
+            theNewYorkTimesNews?.response?.docs.map((object: any) => {
+              let newObj: NewsArticle = {
                 title: object?.headline?.main,
                 description: object?.lead_paragraph,
                 category: searchParams?.category,
@@ -147,7 +179,7 @@ function News() {
     }
   };
 
-  const handleSearchInputChange = (event, key) => {
+  const handleSearchInputChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>, key: keyof SearchParams) => {
     setSearchParams((prevState) => ({
       ...prevState,
       [key]: event.target.value,
@@ -175,18 +207,18 @@ function News() {
             className="dark:bg-gray-800 dark:text-white block shadow-md focus:ring focus:ring-blue-400 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
             value={searchParams.category}
           >
-            {categoryList.map(function (category, i) {
-              return <option key={category.slug} value={category.slug}>{category.name}</option>;
-            })}
+            {categoryList.map((category) => (
+              <option key={category.slug} value={category.slug}>{category.name}</option>
+            ))}
           </select>
           <select
             onChange={(event) => handleSearchInputChange(event, "sources")}
             className="dark:bg-gray-800 dark:text-white block shadow-md focus:ring focus:ring-blue-400 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
             value={searchParams.sources}
           >
-            {sourceList.map(function (source, i) {
-              return <option key={source.slug} value={source.slug}>{source.name}</option>;
-            })}
+            {sourceList.map((source) => (
+              <option key={source.slug} value={source.slug}>{source.name}</option>
+            ))}
           </select>
           <input
             type="date"
@@ -210,7 +242,7 @@ function News() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
             {news.map((post, i) => (
               <div
-                key={post.id}
+                key={i}
                 className="not-prose relative bg-slate-50 rounded-xl overflow-hidden dark:bg-slate-800/25 shadow-md p-6 border-solid border-2 border-sky-900"
               >
                 <h2 className="text-xl font-semibold mb-2 text-blue-600 dark:text-sky-400">
